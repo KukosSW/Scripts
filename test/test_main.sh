@@ -18,4 +18,16 @@ else
     exit 1
 fi
 
+# Source the trapper script
+test_trapper_path="${dir}/../test/test_trapper.sh"
+if [[ -f "${test_trapper_path}" ]]; then
+    # shellcheck source=/dev/null
+    source "${test_trapper_path}"
+else
+    echo "Error: Could not find trapper.sh at ${test_trapper_path}"
+    exit 1
+fi
+
+
 test_suite_trap_manager
+test_suite_trapper
