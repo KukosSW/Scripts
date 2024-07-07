@@ -3,13 +3,13 @@
 set -euo pipefail
 
 # Get the directory of the current script
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+test_main_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Run ShellCheck first
-"${dir}"/../test/test_shellcheck.sh
+"${test_main_dir}"/../test/test_shellcheck.sh
 
 # Source the trap manager script
-test_trap_manager_path="${dir}/../test/test_trap_manager.sh"
+test_trap_manager_path="${test_main_dir}/../test/test_trap_manager.sh"
 if [[ -f "${test_trap_manager_path}" ]]; then
     # shellcheck source=/dev/null
     source "${test_trap_manager_path}"
@@ -19,7 +19,7 @@ else
 fi
 
 # Source the trapper script
-test_trapper_path="${dir}/../test/test_trapper.sh"
+test_trapper_path="${test_main_dir}/../test/test_trapper.sh"
 if [[ -f "${test_trapper_path}" ]]; then
     # shellcheck source=/dev/null
     source "${test_trapper_path}"

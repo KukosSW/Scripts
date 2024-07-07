@@ -3,10 +3,10 @@
 set -euo pipefail
 
 # Get the directory of the current script
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+test_trapper_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Source the trapper script
-trapper_path="${dir}/../src/utils/trapper.sh"
+trapper_path="${test_trapper_dir}/../src/utils/trapper.sh"
 if [[ -f "${trapper_path}" ]]; then
     # shellcheck source=/dev/null
     source "${trapper_path}"

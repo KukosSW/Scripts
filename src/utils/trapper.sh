@@ -10,10 +10,10 @@ export TRAPPER_SOURCED=1
 set -Eeuo pipefail
 
 # Get the directory of the current script
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+trapper_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Source the trap manager script
-trap_manager_path="${dir}/../utils/trap_manager.sh"
+trap_manager_path="${trapper_dir}/../utils/trap_manager.sh"
 if [[ -f "${trap_manager_path}" ]]; then
     # shellcheck source=/dev/null
     source "${trap_manager_path}"
