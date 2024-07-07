@@ -1,0 +1,14 @@
+FROM ubuntu:latest
+
+# Install necessary packages
+RUN apt-get update && apt-get install bash git grep gawk -y
+
+# Copy your script into the Docker image
+COPY  test /usr/local/bin/test
+COPY  src /usr/local/bin/src
+
+# Make the script executable
+RUN chmod +x /usr/local/bin/test/*.sh
+
+# Set the entrypoint to your script
+ENTRYPOINT ["/usr/local/bin/test/test_settings_main.sh"]
