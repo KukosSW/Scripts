@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -Eeuo pipefail
 
 # Prevent double sourcing
 if [[ -n "${LOGGER_SOURCED:-}" ]]; then
@@ -8,8 +8,6 @@ if [[ -n "${LOGGER_SOURCED:-}" ]]; then
 fi
 
 export LOGGER_SOURCED=1
-
-set -Eeuo pipefail
 
 log_file=""
 
@@ -43,7 +41,7 @@ function logger_enable_file_logger()
     log_pipe=$(mktemp -u)
     mkfifo "${log_pipe}"
 
-    tm_trap_add EXIT "rm -f ${log_pipe} && echo \"Removed temporary log pipe: ${log_pipe}\""
+    tm_trap_add EXIT "rm -f ${log_pipe} && echo \"[ADDED by logger]: Removed temporary log pipe: ${log_pipe}\""
 
     tee -i "${log_file}" < "${log_pipe}" &
     exec > "${log_pipe}"

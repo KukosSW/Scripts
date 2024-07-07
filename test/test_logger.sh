@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -euoE pipefail
 
 # Get the directory of the current script
 test_logger_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
