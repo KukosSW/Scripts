@@ -28,6 +28,17 @@ else
     exit 1
 fi
 
+# Source the logger script
+test_logger_path="${test_main_dir}/../test/test_logger.sh"
+if [[ -f "${test_logger_path}" ]]; then
+    # shellcheck source=/dev/null
+    source "${test_logger_path}"
+else
+    echo "Error: Could not find logger.sh at ${test_logger_path}"
+    exit 1
+fi
+
 
 test_suite_trap_manager
 test_suite_trapper
+test_suite_logger
