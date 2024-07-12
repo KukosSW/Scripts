@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -Eu
 
 # Prevent double sourcing
 if [[ -n "${LOGGER_SOURCED:-}" ]]; then

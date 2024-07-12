@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -Eu
 
 # Get the directory of the current script
 test_main_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"

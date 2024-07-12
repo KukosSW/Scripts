@@ -7,7 +7,7 @@ fi
 
 export TRAPPER_SOURCED=1
 
-set -Eeuo pipefail
+set -Eu
 
 # Get the directory of the current script
 trapper_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"

@@ -7,7 +7,7 @@ fi
 
 export TRAP_MANAGER_SOURCED=1
 
-set -Eeuo pipefail
+set -Eu
 
 # This function works perfectly for EXIT trap, but not for the ERR trap
 # trap -p ERR was not giving me the current trap, so I had to use a different approach
