@@ -2,11 +2,26 @@
 
 set -Eu
 
+function test_suite_run()
+{
+    local test_suite_name="${1}"
+
+    if ! eval "${test_suite_name}"; then
+        echo "TEST: ${test_suite_name}: FAILED"
+        exit 1
+    else
+        echo "TEST: ${test_suite_name}: PASSED"
+    fi
+}
+
 # Get the directory of the current script
 test_main_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Run ShellCheck first
-"${test_main_dir}"/../test/test_shellcheck.sh
+if ! "${test_main_dir}"/../test/test_shellcheck.sh; then
+    echo "Error: ShellCheck failed"
+    exit 1
+fi
 
 # Source the trap manager script
 test_trap_manager_path="${test_main_dir}/../test/test_trap_manager.sh"
@@ -38,10 +53,18 @@ else
     exit 1
 fi
 
-test_suite_trap_manager
-test_suite_trapper
-test_suite_logger
+test_suite_run "test_suite_trap_manager"
+test_suite_run "test_suite_trapper"
+test_suite_run "test_suite_logger"
 
 # Tests settings using docker
-docker build -t docker_test_settings -f "${test_main_dir}/docker/Dockerfile_check_settings_ubuntu" .
-docker run --rm docker_test_settings
+if ! docker build -t docker_test_settings -f "${test_main_dir}/docker/Dockerfile_check_settings_ubuntu" .; then
+    echo "Error: Docker build: docker_test_settings failed"
+    exit 1
+fi
+
+
+if ! docker run --rm docker_test_settings; then
+    echo "Error: Docker run: docker_test_settings failed"
+    exit 1
+fi

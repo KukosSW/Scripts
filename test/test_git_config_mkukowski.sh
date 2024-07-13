@@ -17,41 +17,52 @@ fi
 
 function test_git_config_user()
 {
-    if git config --list | grep -q "user.name=Michal Kukowski" && git config --list | grep -q "user.email=kukossw@gmail.com"; then
+    # SC2312 (info): Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
+    (git config --list || true) | grep -q "user.name=Michal Kukowski"
+    local user_name_status=$?
+
+    # SC2312 (info): Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
+    (git config --list || true) | grep -q "user.email=kukossw@gmail.com"
+    local user_email_status=$?
+
+    if [[ ${user_name_status} -eq 0 && ${user_email_status} -eq 0 ]]; then
         echo "TEST: test_git_config_user PASSED"
     else
         echo "TEST: test_git_config_user: FAILED"
-        exit 1
+        return 1
     fi
 }
 
 function test_git_config_smtp()
 {
-    if git config --list | grep -q "sendemail.smtpuser=kukossw@gmail.com"; then
+    # SC2312 (info): Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
+    if (git config --list || true) | grep -q "sendemail.smtpuser=kukossw@gmail.com"; then
         echo "TEST: test_git_config_smtp PASSED"
     else
         echo "TEST: test_git_config_smtp: FAILED"
-        exit 1
+        return 1
     fi
 }
 
 function test_git_config_core()
 {
-    if git config --list | grep -q "core.editor=nvim"; then
+    # SC2312 (info): Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
+    if (git config --list || true) | grep -q "core.editor=nvim"; then
         echo "TEST: test_git_config_core PASSED"
     else
         echo "TEST: test_git_config_core: FAILED"
-        exit 1
+        return 1
     fi
 }
 
 function test_git_config_alias()
 {
-    if git config --list | grep -q "alias.sts=status --short --branch"; then
+    # SC2312 (info): Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
+    if (git config --list || true) | grep -q "alias.sts=status --short --branch"; then
         echo "TEST: test_git_config_alias PASSED"
     else
         echo "TEST: test_git_config_alias: FAILED"
-        exit 1
+        return 1
     fi
 }
 
@@ -62,10 +73,10 @@ function test_suite_git_config_mkukowski()
     # Tests should be run without any additional prints
     trap - EXIT
 
-    test_git_config_user
-    test_git_config_smtp
-    test_git_config_core
-    test_git_config_alias
+    test_git_config_user  || return 1
+    test_git_config_smtp || return 1
+    test_git_config_core || return 1
+    test_git_config_alias || return 1
 
     # Logger is sourced in git_config_mkukowski.sh
     # We need to clean up the logger files

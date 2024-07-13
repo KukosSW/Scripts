@@ -28,7 +28,7 @@ function test_logger_log_info()
     else
         echo "TEST: test_logger_log_info: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -45,7 +45,7 @@ function test_logger_log_error()
     else
         echo "TEST: test_logger_log_error: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -62,7 +62,7 @@ function test_logger_log_warning()
     else
         echo "TEST: test_logger_log_warning: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -79,7 +79,7 @@ function test_logger_log_debug()
     else
         echo "TEST: test_logger_log_debug: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -96,7 +96,7 @@ function test_logger_log_critical()
     else
         echo "TEST: test_logger_log_critical: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -113,7 +113,7 @@ function test_logger_log_trace()
     else
         echo "TEST: test_logger_log_trace: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -130,7 +130,7 @@ function test_logger_log_fatal()
     else
         echo "TEST: test_logger_log_fatal: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -147,7 +147,7 @@ function test_logger_log_success()
     else
         echo "TEST: test_logger_log_success: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -164,7 +164,7 @@ function test_logger_log_failure()
     else
         echo "TEST: test_logger_log_failure: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -181,7 +181,7 @@ function test_logger_log()
     else
         echo "TEST: test_logger_log: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -204,7 +204,7 @@ function test_logger_file_log_info()
         echo "TEST: test_logger_file_log_info: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -227,7 +227,7 @@ function test_logger_file_log_error()
         echo "TEST: test_logger_file_log_error: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -250,7 +250,7 @@ function test_logger_file_log_warning()
         echo "TEST: test_logger_file_log_warning: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -273,7 +273,7 @@ function test_logger_file_log_debug()
         echo "TEST: test_logger_file_log_debug: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -296,7 +296,7 @@ function test_logger_file_log_critical()
         echo "TEST: test_logger_file_log_critical: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -319,7 +319,7 @@ function test_logger_file_log_trace()
         echo "TEST: test_logger_file_log_trace: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -342,7 +342,7 @@ function test_logger_file_log_fatal()
         echo "TEST: test_logger_file_log_fatal: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -365,7 +365,7 @@ function test_logger_file_log_success()
         echo "TEST: test_logger_file_log_success: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -388,7 +388,7 @@ function test_logger_file_log_failure()
         echo "TEST: test_logger_file_log_failure: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
@@ -411,31 +411,31 @@ function test_logger_file_log()
         echo "TEST: test_logger_file_log: FAILED"
         rm -f "${temp_output}"
         rm -f logger_*
-        exit 1
+        return 1
     fi
 }
 
 function test_suite_logger()
 {
-    test_logger_log_info
-    test_logger_log_error
-    test_logger_log_warning
-    test_logger_log_debug
-    test_logger_log_critical
-    test_logger_log_trace
-    test_logger_log_fatal
-    test_logger_log_success
-    test_logger_log_failure
-    test_logger_log
+    test_logger_log_info || return 1
+    test_logger_log_error || return 1
+    test_logger_log_warning || return 1
+    test_logger_log_debug || return 1
+    test_logger_log_critical || return 1
+    test_logger_log_trace || return 1
+    test_logger_log_fatal || return 1
+    test_logger_log_success || return 1
+    test_logger_log_failure || return 1
+    test_logger_log || return 1
 
-    test_logger_file_log_info
-    test_logger_file_log_error
-    test_logger_file_log_warning
-    test_logger_file_log_debug
-    test_logger_file_log_critical
-    test_logger_file_log_trace
-    test_logger_file_log_fatal
-    test_logger_file_log_success
-    test_logger_file_log_failure
-    test_logger_file_log
+    test_logger_file_log_info || return 1
+    test_logger_file_log_error || return 1
+    test_logger_file_log_warning || return 1
+    test_logger_file_log_debug || return 1
+    test_logger_file_log_critical || return 1
+    test_logger_file_log_trace || return 1
+    test_logger_file_log_fatal || return 1
+    test_logger_file_log_success || return 1
+    test_logger_file_log_failure || return 1
+    test_logger_file_log || return 1
 }

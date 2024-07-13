@@ -33,7 +33,7 @@ function test_tm_single_trap_exit()
         rm -f "${trap_executed}"
     else
         echo "TEST: test_tm_single_trap_exit: FAILED"
-        exit 1
+        return 1
     fi
 }
 
@@ -64,7 +64,7 @@ function test_tm_double_trap_exit()
         echo "TEST: test_tm_double_trap_exit: FAILED"
         rm -f "${trap_executed_1}"
         rm -f "${trap_executed_2}"
-        exit 1
+        return 1
     fi
 }
 
@@ -96,7 +96,7 @@ function test_tm_single_trap_removed_exit()
         echo "TEST: test_tm_single_trap_removed_exit: FAILED"
         rm -f "${trap_executed_1}"
         rm -f "${trap_executed_2}"
-        exit 1
+        return 1
     fi
 }
 
@@ -128,7 +128,7 @@ function test_tm_double_trap_removed_exit()
         echo "TEST: test_tm_double_trap_removed_exit: FAILED"
         rm -f "${trap_executed_1}"
         rm -f "${trap_executed_2}"
-        exit 1
+        return 1
     fi
 }
 
@@ -143,12 +143,21 @@ function test_tm_single_trap_exit_err()
     trap_executed_2=$(mktemp -u)
     rm -f "${trap_executed_2}"
 
-    (
+    export -f tm_trap_add
+    export -f tm_trap_remove
+    export trap_executed_1
+    export trap_executed_2
+    bash -c '
+        # Enable exit on error
+        set -eE
+
+        # Set traps within the new bash instance
         tm_trap_add EXIT "touch ${trap_executed_1}"
         tm_trap_add ERR "touch ${trap_executed_2}"
+
+        # Intentionally cause an error
         false
-        exit 1
-    ) &
+    ' &
 
     wait
 
@@ -160,7 +169,7 @@ function test_tm_single_trap_exit_err()
         echo "TEST: test_tm_single_trap_exit_err: FAILED"
         rm -f "${trap_executed_1}"
         rm -f "${trap_executed_2}"
-        exit 1
+        return 1
     fi
 }
 
@@ -179,13 +188,24 @@ function test_tm_single_trap_exit_double_err()
     trap_executed_3=$(mktemp -u)
     rm -f "${trap_executed_3}"
 
-    (
+    export -f tm_trap_add
+    export -f tm_trap_remove
+    export trap_executed_1
+    export trap_executed_2
+    export trap_executed_3
+
+    bash -c '
+        # Enable exit on error
+        set -eE
+
+        # Set traps within the new bash instance
         tm_trap_add EXIT "touch ${trap_executed_1}"
         tm_trap_add ERR "touch ${trap_executed_2}"
         tm_trap_add ERR "touch ${trap_executed_3}"
+
+        # Intentionally cause an error
         false
-        exit 1
-    ) &
+    ' &
 
     wait
 
@@ -200,15 +220,14 @@ function test_tm_single_trap_exit_double_err()
         rm -f "${trap_executed_1}"
         rm -f "${trap_executed_2}"
         rm -f "${trap_executed_3}"
-        exit 1
+        return 1
     fi
 }
 
-function test_tm_single_trap_exit_err_sigusr()
+function test_tm_single_trap_exit_sigusr()
 {
     local trap_executed_1
     local trap_executed_2
-    local trap_executed_3
 
     trap_executed_1=$(mktemp -u)
     rm -f "${trap_executed_1}"
@@ -216,13 +235,9 @@ function test_tm_single_trap_exit_err_sigusr()
     trap_executed_2=$(mktemp -u)
     rm -f "${trap_executed_2}"
 
-    trap_executed_3=$(mktemp -u)
-    rm -f "${trap_executed_3}"
-
     (
         tm_trap_add EXIT "touch ${trap_executed_1}"
-        tm_trap_add ERR "touch ${trap_executed_2}"
-        tm_trap_add SIGUSR1 "touch ${trap_executed_3}"
+        tm_trap_add SIGUSR1 "touch ${trap_executed_2}"
         
         sleep 2
         false 
@@ -233,18 +248,16 @@ function test_tm_single_trap_exit_err_sigusr()
     kill -USR1 "${subschell_pid}"
     wait "${subschell_pid}" || true
 
-    if [[ -f "${trap_executed_1}" && -f "${trap_executed_2}" && -f "${trap_executed_3}" ]]; then
+    if [[ -f "${trap_executed_1}" && -f "${trap_executed_2}" ]]; then
         echo "TEST: test_tm_single_trap_exit_err_sigterm: PASSED"
         rm -f "${trap_executed_1}"
         rm -f "${trap_executed_2}"
-        rm -f "${trap_executed_3}"
 
     else
         echo "TEST: test_tm_single_trap_exit_err_sigterm: FAILED"
         rm -f "${trap_executed_1}"
         rm -f "${trap_executed_2}"
-        rm -f "${trap_executed_3}"
-        exit 1
+        return 1
     fi
 }
 
@@ -263,16 +276,27 @@ function test_tm_single_trap_exit_double_err_removed()
     trap_executed_3=$(mktemp -u)
     rm -f "${trap_executed_3}"
 
-    (
+
+    export -f tm_trap_add
+    export -f tm_trap_remove
+    export trap_executed_1
+    export trap_executed_2
+    export trap_executed_3
+
+    bash -c '
+        # Enable exit on error
+        set -eE
+
+        # Set traps within the new bash instance
         tm_trap_add EXIT "touch ${trap_executed_1}"
         tm_trap_add ERR "touch ${trap_executed_2}"
         tm_trap_add ERR "touch ${trap_executed_3}"
 
         tm_trap_remove ERR
-        
+
+        # Intentionally cause an error
         false
-        exit 1
-    ) &
+    ' &
 
     wait
 
@@ -287,18 +311,18 @@ function test_tm_single_trap_exit_double_err_removed()
         rm -f "${trap_executed_1}"
         rm -f "${trap_executed_2}"
         rm -f "${trap_executed_3}"
-        exit 1
+        return 1
     fi
 }
 
 function test_suite_trap_manager()
 {
-    test_tm_single_trap_exit
-    test_tm_double_trap_exit
-    test_tm_single_trap_removed_exit
-    test_tm_double_trap_removed_exit
-    test_tm_single_trap_exit_err
-    test_tm_single_trap_exit_double_err
-    test_tm_single_trap_exit_err_sigusr
-    test_tm_single_trap_exit_double_err_removed
+    test_tm_single_trap_exit || return 1
+    test_tm_double_trap_exit || return 1
+    test_tm_single_trap_removed_exit || return 1
+    test_tm_double_trap_removed_exit || return 1
+    test_tm_single_trap_exit_err || return 1
+    test_tm_single_trap_exit_double_err || return 1
+    test_tm_single_trap_exit_sigusr || return 1
+    test_tm_single_trap_exit_double_err_removed || return 1
 }

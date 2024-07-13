@@ -15,4 +15,7 @@ else
     exit 1
 fi
 
-test_suite_git_config_mkukowski
+if ! test_suite_git_config_mkukowski; then
+    echo "Error: test_suite_git_config_mkukowski failed"
+    exit 1
+fi

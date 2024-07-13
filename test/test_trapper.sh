@@ -33,7 +33,7 @@ function test_trapper_exit()
     else
         echo "TEST: test_trapper_exit: FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -61,7 +61,7 @@ function __test_trapper_event()
     else
         echo "TEST: test_trapper_event(${event}): FAILED"
         rm -f "${temp_output}"
-        exit 1
+        return 1
     fi
 }
 
@@ -210,30 +210,30 @@ function test_trapper_sigsys()
 
 function test_suite_trapper()
 {
-    test_trapper_exit
-    test_trapper_sighup
-    test_trapper_sigquit
-    test_trapper_sigill
-    test_trapper_sigtrap
-    test_trapper_sigabrt
-    test_trapper_sigfpe
-    test_trapper_sigusr1
-    test_trapper_sigsegv
-    test_trapper_sigusr2
-    test_trapper_sigalrm
-    test_trapper_sigterm
-    test_trapper_sigstkflt
-    test_trapper_sigcont
-    test_trapper_sigtstp
-    test_trapper_sigttin
-    test_trapper_sigttou
-    test_trapper_sigurg
-    test_trapper_sigxcpu
-    test_trapper_sigxfsz
-    test_trapper_sigvtalrm
-    test_trapper_sigprof
-    test_trapper_sigwinch
-    test_trapper_sigio
-    test_trapper_sigpwr
-    test_trapper_sigsys
+    test_trapper_exit || return 1
+    test_trapper_sighup || return 1
+    test_trapper_sigquit || return 1
+    test_trapper_sigill || return 1
+    test_trapper_sigtrap || return 1
+    test_trapper_sigabrt || return 1
+    test_trapper_sigfpe || return 1
+    test_trapper_sigusr1 || return 1
+    test_trapper_sigsegv || return 1
+    test_trapper_sigusr2 || return 1
+    test_trapper_sigalrm || return 1
+    test_trapper_sigterm || return 1
+    test_trapper_sigstkflt || return 1
+    test_trapper_sigcont || return 1
+    test_trapper_sigtstp || return 1
+    test_trapper_sigttin || return 1
+    test_trapper_sigttou || return 1
+    test_trapper_sigurg || return 1
+    test_trapper_sigxcpu || return 1
+    test_trapper_sigxfsz || return 1
+    test_trapper_sigvtalrm || return 1
+    test_trapper_sigprof || return 1
+    test_trapper_sigwinch || return 1
+    test_trapper_sigio || return 1
+    test_trapper_sigpwr || return 1
+    test_trapper_sigsys || return 1
 }
