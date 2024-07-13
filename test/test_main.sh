@@ -14,6 +14,22 @@ function test_suite_run()
     fi
 }
 
+function test_docker()
+{
+    local docker_image_name="${1}"
+    local docker_file_path="${2}"
+
+    if ! docker build -t "${docker_image_name}" -f "${docker_file_path}" .; then
+        echo "Error: Docker build: ${docker_image_name} failed"
+        exit 1
+    fi
+
+    if ! docker run --rm "${docker_image_name}"; then
+        echo "Error: Docker run: ${docker_image_name} failed"
+        exit 1
+    fi
+}
+
 # Get the directory of the current script
 test_main_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -58,13 +74,4 @@ test_suite_run "test_suite_trapper"
 test_suite_run "test_suite_logger"
 
 # Tests settings using docker
-if ! docker build -t docker_test_settings -f "${test_main_dir}/docker/Dockerfile_check_settings_ubuntu" .; then
-    echo "Error: Docker build: docker_test_settings failed"
-    exit 1
-fi
-
-
-if ! docker run --rm docker_test_settings; then
-    echo "Error: Docker run: docker_test_settings failed"
-    exit 1
-fi
+test_docker "docker_ubuntu_test_settings" "${test_main_dir}/docker/Dockerfile_ubuntu_test_settings"
